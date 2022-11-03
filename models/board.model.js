@@ -17,6 +17,7 @@ Board.init({
     },
     rating: {
         type: DataTypes.INTEGER,
+        defaultValue: 3
     }
 }, {sequelize: db})
 

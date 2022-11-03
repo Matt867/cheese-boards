@@ -1,10 +1,9 @@
 const { Cheese, Board, User } = require('../models/index');
 const db = require('../db/db');
-const { update } = require('../models/cheese.model');
 
 /* TEST FOR CRUD CAPABILITY: CREATE, READ, UPDATE, DELETE */
 
-describe('Tests for the Cheese Model', () => {
+describe('A test suite for the Cheese Model', () => {
 
     test('A test designed to execute a create and read transaction', async () => {
         // Create cheese record
@@ -59,7 +58,7 @@ describe('Tests for the Cheese Model', () => {
 })
 
 
-describe('Tests for the Board Model', () => {
+describe('A test suite for the Board Model', () => {
 
     test('A test designed to execute a create and read transaction', async () => {
         // Create board record
@@ -112,7 +111,7 @@ describe('Tests for the Board Model', () => {
 })
 
 
-describe('Tests for the User Model', () => {
+describe('A test suite for the User Model', () => {
 
     test('A test designed to execute a create and read transaction', async () => {
         // Create user record
