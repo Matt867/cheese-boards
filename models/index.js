@@ -1,6 +1,6 @@
-const { Cheese } = require('./cheese.model');
-const { Board } = require('./Board.model');
-const { User } = require('./User.model');
+const Cheese = require('./cheese.model');
+const Board = require('./Board.model');
+const User = require('./User.model');
 
 /* DEFINE RELATIONSHIPS WITHIN THIS FILE
 *****************************************/
