@@ -18,5 +18,8 @@
     "jest": "^29.2.2",
     "sequelize": "^6.25.3",
     "sqlite3": "^5.1.2"
+  },
+  "devDependencies": {
+    "sequelize-mock": "^0.10.2"
   }
 }

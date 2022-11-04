@@ -1,4 +1,4 @@
-const { Cheese, Board, User } = require('../models/index');
+const { Cheese, Board, User, Review } = require('../models/index');
 const db = require('../db/db');
 
 /* TEST FOR CRUD CAPABILITY: CREATE, READ, UPDATE, DELETE */
@@ -25,6 +25,17 @@ describe('A test suite for the Cheese Model', () => {
         expect(readCheese.description).toBe(createdCheese.description);
 
     });
+
+    test('Testing the datatypes of the table properties', async () => {
+        const readCheese = await Cheese.findOne({
+            where: {
+                title: 'Emmental'
+            }
+        });
+
+        expect(typeof readCheese.title).toBe('string');
+        expect(typeof readCheese.description).toBe('string');
+    })
 
 
     test('A test designed to execute a update transaction', async () => {
@@ -82,6 +93,18 @@ describe('A test suite for the Board Model', () => {
         expect(readBoard.rating).toBe(createdBoard.rating);
     });
 
+    test('Testing the datatypes of the table properties', async () => {
+        const readBoard = await Board.findOne({
+            where: {
+                type: 'Mixed'
+            }
+        });
+
+        expect(typeof readBoard.type).toBe('string');
+        expect(typeof readBoard.description).toBe('string');
+        expect(typeof readBoard.rating).toBe('number');
+    })
+
     test('A test designed to execute a update transaction', async () => {
         // create handle for Board with id 1
         const mixedBoard = await Board.findByPk(1)
@@ -135,6 +158,17 @@ describe('A test suite for the User Model', () => {
 
     });
 
+    test('Testing the datatypes of the table properties', async () => {
+        const readUser = await User.findOne({
+            where: {
+                name: 'harry'
+            }
+        });
+
+        expect(typeof readUser.name).toBe('string');
+        expect(typeof readUser.email).toBe('string');
+    })
+
     test('A test designed to execute a update transaction', async () => {
         // create handle for User with id 1
         const harry = await User.findByPk(1)
@@ -162,4 +196,69 @@ describe('A test suite for the User Model', () => {
         // expect the find to return null
         expect(nullUser).toBeNull()
     })
+})
+
+
+describe('A test suite for the Review Model', () => {
+
+    test('A test designed to execute a create and read transaction', async () => {
+        // Create review record
+        createdReview = await Review.create({
+            score: 4,
+            review_body: "Wow!"
+        });
+
+        // read that review into a separate handle to check read transaction
+        const readReview = await Review.findOne({
+            where: {
+                review_body: "Wow!"
+            }
+        });
+
+        // compare the properties of the read record against the created record
+        expect(readReview.id).toBe(createdReview.id);
+        expect(readReview.name).toBe(createdReview.name);
+        expect(readReview.email).toBe(createdReview.email);
+    });
+
+    test('Testing the datatypes of the table properties', async () => {
+        const readReview = await Review.findOne({
+            where: {
+                review_body: 'Wow!'
+            }
+        });
+
+        expect(typeof readReview.score).toBe('number');
+        expect(typeof readReview.review_body).toBe('string');
+    })
+
+
+    test('A test designed to execute a update transaction', async () => {
+        // create handle for User with id 1
+        const review = await Review.findByPk(1)
+
+        // update the record at id 1
+        await review.update({
+            review_body: 'OMG!'
+        })
+
+        // create a new handle for the updated record
+        const updatedReview = await Review.findByPk(1)
+
+        // compare the changed property of against the actual change that was made
+        expect(updatedReview.review_body).toBe('OMG!');
+    })
+
+
+    test('A test designed to execute a delete transaction', async () => {
+        // Create handle for harry with id of 1
+        review = await Review.findByPk(1);
+        // destroy the record associated with the handle harry
+        await review.destroy()
+        // attempt to create another handle for user harry that was just deleted
+        const nullReview = await Review.findByPk(1);
+        // expect the find to return null
+        expect(nullReview).toBeNull()
+    })
+
 })
