@@ -62,7 +62,12 @@ describe('A test suite for the Cheese Model', () => {
         // attempt to create another handle for emmental cheese that was just deleted
         const nullCheese = await Cheese.findByPk(1);
         // expect the find to return null
+        await db.sync({
+            force: true
+        });
+
         expect(nullCheese).toBeNull()
+
     })
 
 
@@ -76,7 +81,6 @@ describe('A test suite for the Board Model', () => {
         createdBoard = await Board.create({
             type: 'Mixed',
             description: 'Mixed placeholder desc',
-            rating: 4,
         });
 
         // read that Board into a separate handle to check read transaction
@@ -90,7 +94,6 @@ describe('A test suite for the Board Model', () => {
         expect(readBoard.id).toBe(createdBoard.id);
         expect(readBoard.type).toBe(createdBoard.type);
         expect(readBoard.description).toBe(createdBoard.description);
-        expect(readBoard.rating).toBe(createdBoard.rating);
     });
 
     test('Testing the datatypes of the table properties', async () => {
@@ -128,9 +131,17 @@ describe('A test suite for the Board Model', () => {
         await mixedBoard.destroy()
         // attempt to create another handle for mixed board that was just deleted
         const nullBoard = await Board.findByPk(1);
+
+        await db.sync({
+            force: true
+        });
+
         // expect the find to return null
         expect(nullBoard).toBeNull()
+
+
     })
+
 })
 
 
@@ -195,6 +206,11 @@ describe('A test suite for the User Model', () => {
         const nullUser = await User.findByPk(1);
         // expect the find to return null
         expect(nullUser).toBeNull()
+
+        await db.sync({
+            force: true
+        });
+
     })
 })
 
@@ -238,12 +254,9 @@ describe('A test suite for the Review Model', () => {
         const review = await Review.findByPk(1)
 
         // update the record at id 1
-        await review.update({
+        const updatedReview = await review.update({
             review_body: 'OMG!'
         })
-
-        // create a new handle for the updated record
-        const updatedReview = await Review.findByPk(1)
 
         // compare the changed property of against the actual change that was made
         expect(updatedReview.review_body).toBe('OMG!');
@@ -252,13 +265,21 @@ describe('A test suite for the Review Model', () => {
 
     test('A test designed to execute a delete transaction', async () => {
         // Create handle for harry with id of 1
-        review = await Review.findByPk(1);
+        reviews = await Review.findAll();
         // destroy the record associated with the handle harry
-        await review.destroy()
+        for (review of reviews) {
+            await review.destroy()
+        }
         // attempt to create another handle for user harry that was just deleted
         const nullReview = await Review.findByPk(1);
+
+        await db.sync({
+            force: true
+        });
+
         // expect the find to return null
         expect(nullReview).toBeNull()
+
     })
 
 })

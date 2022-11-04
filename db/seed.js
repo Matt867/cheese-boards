@@ -1,5 +1,6 @@
-const { Cheese, Board, User } = require('../models');
+const { Cheese, Board, User, Review } = require('../models');
 const db = require('./db');
+const createNewReview = require('../src/main')
 
 const seed = async () => {
 
@@ -7,7 +8,7 @@ const seed = async () => {
         force: true
     });
 
-    await User.bulkCreate([
+    users = await User.bulkCreate([
         {
             name: "Charles Windsor",
             email: "charles@royal.com"
@@ -38,7 +39,7 @@ const seed = async () => {
         }
     ])
 
-    await Cheese.bulkCreate([
+    cheeses = await Cheese.bulkCreate([
         {
             title: "Burata",
             description: "placeholder"
@@ -65,7 +66,7 @@ const seed = async () => {
         }
     ])
 
-    await Board.bulkCreate([
+    boards = await Board.bulkCreate([
         {
             type: "gross",
             description: "placeholder"
@@ -107,6 +108,12 @@ const seed = async () => {
             const c1 = await Cheese.findByPk(Math.floor((Math.random()) * 6) + 1);
             b1.addCheese(c1)
         }
+
+    }
+
+    for (let w = 0; w < 100; w++) {
+
+        createNewReview(users[Math.floor(Math.random()*users.length)], boards[Math.floor(Math.random()*boards.length)], Math.floor((Math.random()*5)+1), 'placeholder');
 
     }
 

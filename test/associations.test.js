@@ -1,12 +1,8 @@
-const { Cheese, Board, User } = require('../models/index');
+const { Cheese, Board, User, Review } = require('../models/index');
 const db = require('../db/db');
 
 // Clear database before each test
-beforeEach(async () => {
-    await db.sync({
-        force: true
-    });
-});
+
 
 describe('Test Suite testing the One to Many relationship between User and Board', () => {
 
@@ -22,7 +18,6 @@ describe('Test Suite testing the One to Many relationship between User and Board
         const b1 = await Board.create({
             type: 'basic',
             description: 'placeholder',
-            rating: 4
         });
 
         // set test user to owning test board
@@ -30,6 +25,10 @@ describe('Test Suite testing the One to Many relationship between User and Board
 
         // create new handle for test board
         const b2 = await Board.findByPk(b1.id, { include: User });
+
+        await db.sync({
+            force: true
+        });
 
         // compare handle properties
         expect(b2.User.email).toEqual('example@mail.com');
@@ -49,7 +48,6 @@ describe('Test Suite testing the One to Many relationship between User and Board
         const b1 = await Board.create({
             type: 'basic',
             description: 'placeholder',
-            rating: 4
         });
 
         // set test user to owning test board
@@ -61,9 +59,15 @@ describe('Test Suite testing the One to Many relationship between User and Board
         // lazy loading of test user data
         newU1 = await b2.getUser()
 
+        await db.sync({
+            force: true
+        });
+
         // compare handle properties
         expect(newU1.email).toEqual('example@mail.com');
         expect(newU1.name).toEqual('eg');
+
+
 
     });
 
@@ -81,22 +85,21 @@ describe('Test Suite testing the One to Many relationship between User and Board
             {
                 type: 'ready',
                 description: 'placeholder',
-                rating: 4
+
             },
             {
                 type: 'yum',
                 description: 'placeholder',
-                rating: 4
+
             },
             {
                 type: 'gross',
                 description: 'placeholder',
-                rating: 4
+
             },
             {
                 type: 'delicious',
                 description: 'placeholder',
-                rating: 4
             }
         );
 
@@ -118,6 +121,10 @@ describe('Test Suite testing the One to Many relationship between User and Board
 describe('Test Suite testing the Many to Many relationship between Cheese and Board', () => {
 
     test('Adding many cheeses to one board', async () => {
+
+        await db.sync({
+            force: true
+        });
 
         // create single test board
         board = await Board.create(
@@ -167,6 +174,10 @@ describe('Test Suite testing the Many to Many relationship between Cheese and Bo
         for (let k = 0; k < checkBoard.Cheeses.length; k++) {
             expect(checkBoard.Cheeses[k].title).toBe(cheeses[k].title)
         }
+
+        await db.sync({
+            force: true
+        });
 
     })
 
@@ -246,6 +257,53 @@ describe('Test Suite testing the Many to Many relationship between Cheese and Bo
                 expect(checkBoard.Cheeses[j].description).toEqual(cheeses[j].description)
             }
         }
+
+
+
+    })
+
+})
+
+describe('Test suite testing the associations between users and reviews, and boards and reviews', () => {
+
+    test('Adding a review to the table, and testing eager loading of both board and user', async () => {
+
+        await db.sync({
+            force: true
+        });
+
+        const user1 = await User.create({
+            name: 'har',
+            email: 'har@gmail.com'
+        })
+
+        const b1 = await Board.create({
+            type: 'mixed',
+            description: 'test'
+        })
+
+        const rev = await Review.create({
+            score: 4,
+            review_body: 'HELLOTHERE',
+        });
+
+        await rev.setUser(user1);
+        await rev.setBoard(b1);
+
+        const revs = await Review.findAll({
+            include: [
+                {
+                    model: User
+                },
+                {
+                    model: Board
+                }
+        ]});
+
+        expect(revs[0].User.name).toBe(user1.name)
+        expect(revs[0].User.email).toBe(user1.email)
+        expect(revs[0].Board.type).toBe(b1.type)
+        expect(revs[0].Board.description).toBe(b1.description)
 
     })
 

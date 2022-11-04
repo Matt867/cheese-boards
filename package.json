@@ -6,7 +6,8 @@
   "scripts": {
     "test": "cd db && node seed.js && cd .. && cd test && jest",
     "seed": "cd db && node seed.js",
-    "dbreset": "cd db && node refresh.js"
+    "dbreset": "cd db && node refresh.js",
+    "main": "cd src && node main.js"
   },
   "repository": {
     "type": "git",

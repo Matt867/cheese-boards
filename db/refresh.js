@@ -1,4 +1,4 @@
-const { Cheese, Board, User } = require('../models');
+const { Cheese, Board, User, Review } = require('../models');
 const db = require('./db');
 
 const refresh = async () => {
