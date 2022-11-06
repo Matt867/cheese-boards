@@ -1,6 +1,11 @@
 const { Cheese, Board, User, Review } = require('../models');
 const db = require('../db/db');
 
+/*******************************
+ * THIS FILE DOESN'T REALLY HAVE MUCH FUNCTION OTHER THAN TO DEMONSTRATE WHAT COULD BE DONE TO AUTOMATE THE
+ * ASSOCIATIONS BETWEEN MODELS AND BUILD OUT A LITTLE APPLICATION FROM THIS DATAMODEL
+ */
+
 
 async function main () {
     boards = await Board.findAll()
