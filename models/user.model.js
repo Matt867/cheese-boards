@@ -11,9 +11,15 @@ User.init({
     },
     name: {
         type: DataTypes.STRING,
+        validate: {
+            len: [0,24]
+        }
     },
     email: {
         type: DataTypes.STRING,
+        validate: {
+            isEmail: true
+        }
     },
 }, {sequelize: db})
 

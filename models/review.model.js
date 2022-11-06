@@ -13,10 +13,18 @@ Review.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 3,
+        validate: {
+            isNumeric: true,
+            min: 0,
+            max: 5
+        }
     },
     review_body: {
         type: DataTypes.TEXT,
-        defaultValue: ''
+        defaultValue: '',
+        validate: {
+            len: [0,1024]
+        }
     }
 }, {sequelize: db})
 

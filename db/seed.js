@@ -2,12 +2,7 @@ const { Cheese, Board, User, Review } = require('../models');
 const db = require('./db');
 const createNewReview = require('../src/main')
 
-const seed = async () => {
-
-    await db.sync({
-        force: true
-    });
-
+const populate = async () => {
     users = await User.bulkCreate([
         {
             name: "Charles Windsor",
@@ -93,14 +88,14 @@ const seed = async () => {
         }
     ])
 
-    for (let i=0; i < Math.floor(Math.random()*4); i++) {
-        const b1 = await Board.findByPk(Math.floor((Math.random()) * 6) + 1);
-
+    // assign each board to a random user
+    for (let i=0; i < boards.length; i++) {
         const u1 = await User.findByPk(Math.floor((Math.random()) * 7) + 1);
 
-        b1.setUser(u1);
+        boards[i].setUser(u1);
     }
 
+    // add random cheeses to each board
     for (let j=0; j < 5; j++) {
         const b1 = await Board.findByPk(j+1);
 
@@ -111,11 +106,22 @@ const seed = async () => {
 
     }
 
-    for (let w = 0; w < 100; w++) {
+    // create 150 randomly rated reviews on random boards
+    for (let w = 0; w < 50; w++) {
 
         createNewReview(users[Math.floor(Math.random()*users.length)], boards[Math.floor(Math.random()*boards.length)], Math.floor((Math.random()*5)+1), 'placeholder');
 
     }
+}
+
+const seed = async () => {
+
+    await Cheese.sync()
+    await Board.sync()
+    await User.sync()
+    await Review.sync()
+
+    await populate()
 
 }
 

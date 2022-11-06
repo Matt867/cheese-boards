@@ -11,9 +11,15 @@ Cheese.init({
     },
     title: {
         type: DataTypes.STRING,
+        validate: {
+            len: [0,240]
+        }
     },
     description: {
         type: DataTypes.STRING,
+        validate: {
+            len: [0,1024]
+        }
     },
 }, {sequelize: db})
 

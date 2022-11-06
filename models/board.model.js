@@ -11,13 +11,24 @@ Board.init({
     },
     type: {
         type: DataTypes.STRING,
+        validate: {
+            len: [0,240]
+        }
     },
     description: {
         type: DataTypes.STRING,
+        validate: {
+            len: [0,1024]
+        }
     },
     rating: {
         type: DataTypes.INTEGER,
-        defaultValue: 3
+        defaultValue: 3,
+        validate: {
+            isNumeric: true,
+            min: 0,
+            max: 5,
+        }
     }
 }, {sequelize: db})
 

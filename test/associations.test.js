@@ -1,7 +1,6 @@
 const { Cheese, Board, User, Review } = require('../models/index');
 const db = require('../db/db');
 
-// Clear database before each test
 
 
 describe('Test Suite testing the One to Many relationship between User and Board', () => {
@@ -82,6 +81,7 @@ describe('Test Suite testing the One to Many relationship between User and Board
 
         // create multiple test boards
         const boards = await Board.bulkCreate(
+
             {
                 type: 'ready',
                 description: 'placeholder',
@@ -258,8 +258,6 @@ describe('Test Suite testing the Many to Many relationship between Cheese and Bo
             }
         }
 
-
-
     })
 
 })
@@ -272,24 +270,29 @@ describe('Test suite testing the associations between users and reviews, and boa
             force: true
         });
 
+        // create new test user
         const user1 = await User.create({
             name: 'har',
             email: 'har@gmail.com'
         })
 
+        // create new test board
         const b1 = await Board.create({
             type: 'mixed',
             description: 'test'
         })
 
+        // create test review
         const rev = await Review.create({
             score: 4,
             review_body: 'HELLOTHERE',
         });
 
+        // set user and board of this review
         await rev.setUser(user1);
         await rev.setBoard(b1);
 
+        // find all reviews with eager loading on their associated User and board
         const revs = await Review.findAll({
             include: [
                 {
@@ -300,6 +303,7 @@ describe('Test suite testing the associations between users and reviews, and boa
                 }
         ]});
 
+        // compare against real values
         expect(revs[0].User.name).toBe(user1.name)
         expect(revs[0].User.email).toBe(user1.email)
         expect(revs[0].Board.type).toBe(b1.type)

@@ -1,11 +1,14 @@
 const { Cheese, Board, User, Review } = require('../models/index');
 const db = require('../db/db');
+const { ValidationError } = require('sequelize');
 
 /* TEST FOR CRUD CAPABILITY: CREATE, READ, UPDATE, DELETE */
+
 
 describe('A test suite for the Cheese Model', () => {
 
     test('A test designed to execute a create and read transaction', async () => {
+
         // Create cheese record
         createdCheese = await Cheese.create({
             title: 'Emmental',
@@ -62,12 +65,35 @@ describe('A test suite for the Cheese Model', () => {
         // attempt to create another handle for emmental cheese that was just deleted
         const nullCheese = await Cheese.findByPk(1);
         // expect the find to return null
-        await db.sync({
-            force: true
-        });
 
         expect(nullCheese).toBeNull()
 
+    })
+
+    test('A test designed to create a cheese with a description greater than 1024 chars', async () => {
+        await expect(Cheese.create({title: 'acceptable title', description:`
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        ifuehbfuisbefeuiabfeiusfbeusfbieufbseiufbseiufbesfiuebsfiube
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        ifuehbfuisbefeuiabfeiusfbeusfbieufbseiufbseiufbesfiuebsfiube
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        ifuehbfuisbefeuiabfeiusfbeusfbieufbseiufbseiufbesfiuebsfiube
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        ifuehbfuisbefeuiabfeiusfbeusfbieufbseiufbseiufbesfiuebsfiube
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        ifuehbfuisbefeuiabfeiusfbeusfbieufbseiufbseiufbesfiuebsfiube
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        `})).rejects.toThrow(ValidationError)
+    })
+
+    test('A test designed to create a cheese with a title longer than 240 chars', async () => {
+        await expect(Cheese.create({title: 'TOO LONG NAME FOR A CHEESE WHO WOULD DO THIS, WAY TOO LONG SHOULD DEFINITELY FAIL TOO LONG NAME FOR A CHEESE WHO WOULD DO THIS, WAY TOO LONG SHOULD DEFINITELY FAIL TOO LONG NAME FOR A CHEESE WHO WOULD DO THIS, WAY TOO LONG SHOULD DEFINITELY FAIL', description: 'acceptable description'})).rejects.toThrow(ValidationError)
     })
 
 
@@ -132,14 +158,41 @@ describe('A test suite for the Board Model', () => {
         // attempt to create another handle for mixed board that was just deleted
         const nullBoard = await Board.findByPk(1);
 
-        await db.sync({
-            force: true
-        });
-
         // expect the find to return null
         expect(nullBoard).toBeNull()
 
+    })
 
+    test('A test designed to trigger the validation errors within the board model', async () => {
+        await expect(Board.create({type: 'acceptable type', description: `
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        ifuehbfuisbefeuiabfeiusfbeusfbieufbseiufbseiufbesfiuebsfiube
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        ifuehbfuisbefeuiabfeiusfbeusfbieufbseiufbseiufbesfiuebsfiube
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        ifuehbfuisbefeuiabfeiusfbeusfbieufbseiufbseiufbesfiuebsfiube
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        ifuehbfuisbefeuiabfeiusfbeusfbieufbseiufbseiufbesfiuebsfiube
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        ifuehbfuisbefeuiabfeiusfbeusfbieufbseiufbseiufbesfiuebsfiube
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        `})).rejects.toThrow(ValidationError)
+
+        await expect(Board.create({type:`
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        `, description: 'acceptable description'})).rejects.toThrow(ValidationError)
+
+        await expect(Board.create({type:'acceptable type', description: 'acceptable desc', rating: -4})).rejects.toThrow()
+        await expect(Board.create({type:'acceptable type', description: 'acceptable desc', rating: 8})).rejects.toThrow()
     })
 
 })
@@ -207,10 +260,11 @@ describe('A test suite for the User Model', () => {
         // expect the find to return null
         expect(nullUser).toBeNull()
 
-        await db.sync({
-            force: true
-        });
+    })
 
+    test('A test designed to create a user than will trigger all validation errors', async () => {
+        await expect(User.create({name: "dwaiudwagbduiawhduiwahdawuidhawu", email: 'exmaple@gmail.com!'})).rejects.toThrow(ValidationError);
+        await expect(User.create({name: "acceptablename", email: 'notAnEmail'})).rejects.toThrow(ValidationError);
     })
 })
 
@@ -273,13 +327,37 @@ describe('A test suite for the Review Model', () => {
         // attempt to create another handle for user harry that was just deleted
         const nullReview = await Review.findByPk(1);
 
-        await db.sync({
-            force: true
-        });
-
         // expect the find to return null
         expect(nullReview).toBeNull()
 
+    })
+
+    test('A test designed to attempt to create a review with score higher than 5 or lower than 0 and expecting it to fail', async () => {
+        // console.log(rev)
+        await expect(Review.create({score: 8, review_body: 'Wowie!'})).rejects.toThrow(ValidationError);
+        await expect(Review.create({score: -2, review_body: 'Wowie!'})).rejects.toThrow(ValidationError);
+    })
+
+    test('Attempting to make review with body more than 1024 chars', async () => {
+        await expect(Review.create({score: 3, review_body:`
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        ifuehbfuisbefeuiabfeiusfbeusfbieufbseiufbseiufbesfiuebsfiube
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        ifuehbfuisbefeuiabfeiusfbeusfbieufbseiufbseiufbesfiuebsfiube
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        ifuehbfuisbefeuiabfeiusfbeusfbieufbseiufbseiufbesfiuebsfiube
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        ifuehbfuisbefeuiabfeiusfbeusfbieufbseiufbseiufbesfiuebsfiube
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        ifuehbfuisbefeuiabfeiusfbeusfbieufbseiufbseiufbesfiuebsfiube
+        feiushfiesufhseiufbnsieufbesiufbesiufbeisufbaiufbsiufbawuidf
+        fiuesbnfuiebdfkjadbwiudbeufiebsfkjebuifbeifuesbfkesjbfduisbf
+        `})).rejects.toThrow(ValidationError)
     })
 
 })
